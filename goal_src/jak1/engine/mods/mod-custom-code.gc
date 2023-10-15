@@ -84,7 +84,8 @@
       (case cell-event
         (('pickup)      
           ;; Code here runs as soon as you pickup a powercell
-
+          
+          (safe-deactivate-remote-cell)
           )
         (('cutscene-end)      
           ;; Code here runs at the end of any powercell cutscene
