@@ -6,10 +6,10 @@
 ;; dgos: GAME, ENGINE
 
 
-(define-extern runs-on-orb-pickup (function process-tree string string none))
-(define-extern runs-on-fly-pickup (function int32 string string none))
+(define-extern runs-on-orb-pickup (function process-tree none))
+(define-extern runs-on-fly-pickup (function none))
 (define-extern runs-on-cell-pickup (function symbol none))
-(define-extern runs-on-eco-pickup (function pickup-type process-tree string none))
+(define-extern runs-on-eco-pickup (function pickup-type process-tree none))
 (define-extern process-close? (function process-drawable float basic))
 (define-extern *enable-remote-target-eco-pickup* symbol)
 
@@ -1454,7 +1454,7 @@
       (add-setting! 'allow-progress #f 0.0 0)
       (apply-settings *setting-control*)
       (logclear! (-> self mask) (process-mask actor-pause))
-      (if (= *target* proc)) ;; only allow cell pickup for current target, remote should be handled through function
+      (if (= *target* proc) ;; only allow cell pickup for current target, remote should be handled through function
         (go-virtual pickup #f (process->handle proc))
         )
       )

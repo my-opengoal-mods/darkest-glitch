@@ -20,6 +20,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+;; game settings
+(define *enable-ingame-cutscenes?* #f)
 
 ;; multiplayer
 (define *multiplayer-info* (new 'global 'multiplayer-info))
@@ -824,6 +826,19 @@
     (<= 
       (vector-vector-distance 
         (target-pos 0) 
+        (-> proc root trans)
+        )
+      dist
+      )
+    )
+  )
+
+(defun remote-target-process-close? ((remote-target target) (proc process-drawable) (dist float))
+  (and 
+    proc
+    (<= 
+      (vector-vector-distance 
+        (remote-target-pos 0 remote-target) 
         (-> proc root trans)
         )
       dist
