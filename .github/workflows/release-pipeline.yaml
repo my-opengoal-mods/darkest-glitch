@@ -20,6 +20,8 @@ jobs:
   cut-release:
     name: Cut Release
     runs-on: ubuntu-latest
+    outputs:
+      new_tag: ${{ steps.set_tag.outputs.new_tag }}
     steps:
       # Docs - https://github.com/mathieudutour/github-tag-action
       - name: Bump Version and Push Tag
