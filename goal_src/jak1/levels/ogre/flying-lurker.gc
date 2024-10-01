@@ -26,6 +26,7 @@
    plunger-lurker-idle
    plunger-lurker-plunge))
 
+
 (defskelgroup *plunger-lurker-sg*
   plunger-lurker
   plunger-lurker-lod0-jg
@@ -236,6 +237,7 @@
    flying-lurker-idle
    flying-lurker-sleep
    flying-lurker-start))
+
 
 (defskelgroup *flying-lurker-sg*
   flying-lurker
@@ -611,7 +613,7 @@
       (process-release? *target*)
       (process-spawn-function process
         (lambda :behavior process ()
-          (let ((gp-0 (current-time))) (until (time-elapsed? gp-0 (seconds 0.1)) (suspend)))
+          (suspend-for (seconds 0.1))
           (level-hint-spawn (text-id ogre-race-hint) "asstvb24" (the-as entity #f) *entity-pool* (game-task none))
           (none))
         :to
@@ -675,11 +677,7 @@
         process
         (lambda :behavior process
           ()
-          (let ((gp-0 (-> *display* base-frame-counter)))
-            (until (>= (- (-> *display* base-frame-counter) gp-0) (seconds 0.1))
-              (suspend)
-              )
-            )
+          (suspend-for (seconds 0.1))
           (level-hint-spawn (text-id ogre-race-hint) "asstvb24" (the-as entity #f) *entity-pool* (game-task none))
           (none)
           )
@@ -836,7 +834,7 @@
            (if (= (get-task-status (game-task plunger-lurker-hit)) (task-status invalid)) (go flying-lurker-die))
            (when (and *target* (>= 172032.0 (vector-vector-xz-distance (-> self root trans) (-> *target* control trans))))
              (if *enable-ingame-cutscenes?* (process-grab? *target*))
-             (let ((s5-0 (current-time))) (until (time-elapsed? s5-0 (seconds 1)) (suspend)))
+             (suspend-for (seconds 1))
              (if *enable-ingame-cutscenes?* (process-release? *target*))
              (send-event self 'saw-player))
            (suspend)
