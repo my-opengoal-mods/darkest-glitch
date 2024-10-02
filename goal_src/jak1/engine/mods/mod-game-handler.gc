@@ -266,21 +266,13 @@
     #t
   )
 
-(defun is-same-level? ((level-name1 symbol) (level-name2 symbol))
-  (cond
-    ((or (= level-name1 'maincave) (= level-name1 'robocave) (= level-name1 'darkcave))
-      (or (= level-name2 'maincave) (= level-name2 'robocave) (= level-name2 'darkcave))
+(defun is-same-level? ((level0 symbol) (level1 symbol))
+  (or (= level0 level1)
+      (and (symbol-member? level0 '(maincave robocave darkcave)) (symbol-member? level1 '(maincave robocave darkcave)))
+      (and (symbol-member? level0 '(sunken sunkenb)) (symbol-member? level1 '(sunken sunkenb)))
+      (and (symbol-member? level0 '(jungle jungleb)) (symbol-member? level1 '(jungle jungleb)))
+      (and (symbol-member? level0 '(citadel finalboss)) (symbol-member? level1 '(citadel finalboss)))
       )
-    ((or (= level-name1 'sunken) (= level-name1 'sunkenb))
-      (or (= level-name2 'sunken) (= level-name2 'sunkenb))
-      )
-    ((or (= level-name1 'jungle) (= level-name1 'jungleb))
-      (or (= level-name2 'jungleb) (= level-name2 'jungle))
-      )
-    (else
-      (= level-name1 level-name2)
-      )
-    )
   )
 
 (defun all-teammates-in-same-level? ()
