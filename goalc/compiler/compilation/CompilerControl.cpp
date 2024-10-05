@@ -19,6 +19,7 @@
 #include "goalc/data_compiler/dir_tpages.h"
 #include "goalc/data_compiler/game_count.h"
 #include "goalc/data_compiler/game_text_common.h"
+#include <goalc/data_compiler/taunt.h>
 /*!
  * Exit the compiler. Disconnects the listener and tells the target to reset itself.
  * Will actually exit the next time the REPL runs.
@@ -71,6 +72,8 @@ Val* Compiler::compile_asm_data_file(const goos::Object& form, const goos::Objec
     compile_game_count(as_string(args.unnamed.at(1)), m_make.compiler_output_prefix());
   } else if (kind == "dir-tpages") {
     compile_dir_tpages(as_string(args.unnamed.at(1)), m_make.compiler_output_prefix());
+  } else if (kind == "taunt-info") {
+    compile_taunts(as_string(args.unnamed.at(1)), m_make.compiler_output_prefix());
   } else {
     throw_compiler_error(form, "The option {} was not recognized for asm-data-file.", kind);
   }

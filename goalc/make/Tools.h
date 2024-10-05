@@ -99,3 +99,9 @@ class BuildActorTool : public Tool {
   bool run(const ToolInput& task, const PathMap& path_map) override;
   bool needs_run(const ToolInput& task, const PathMap& path_map) override;
 };
+
+class TauntInfoTool : public Tool {
+public:
+ TauntInfoTool();
+ bool run(const ToolInput& task, const PathMap& path_map) override;
+};
