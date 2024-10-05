@@ -356,6 +356,7 @@
   "mod-common-functions.o" ;; added
   "orb-placer.o" ;; added
   "taunt-menu.o" ;; added
+  "taunt-info.go" ;; added
   "mod-custom-code.o" ;; added
   "mod-debug.o" ;; added
   ;; keep zoomer stuff loaded

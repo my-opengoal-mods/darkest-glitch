@@ -316,6 +316,11 @@
   :out '("$OUT/obj/game-cnt.go")
   )
 
+;; og:teamruns added taunt list
+(defstep :in "custom_assets/jak1/taunts/taunts.json"
+  :tool 'taunt-info
+  :out '("$OUT/obj/taunt-info.go"))
+
 ;; the TWEAKVAL file
 (defstep :in "$ISO/MUS/TWEAKVAL.MUS"
   :tool 'copy

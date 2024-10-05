@@ -12,6 +12,7 @@
 #include "goalc/data_compiler/dir_tpages.h"
 #include "goalc/data_compiler/game_count.h"
 #include "goalc/data_compiler/game_text_common.h"
+#include <goalc/data_compiler/taunt.h>
 
 #include "fmt/core.h"
 
@@ -317,4 +318,14 @@ bool BuildActorTool::run(const ToolInput& task, const PathMap& path_map) {
   }
   auto gen_mesh = task.input.at(1) == "#t";
   return jak1::run_build_actor(task.input.at(0), task.output.at(0), gen_mesh);
+}
+
+TauntInfoTool::TauntInfoTool() : Tool("taunt-info") {}
+
+bool TauntInfoTool::run(const ToolInput& task, const PathMap& path_map) {
+  if (task.input.size() != 1) {
+    throw std::runtime_error(fmt::format("Invalid amount of inputs to {} tool", name()));
+  }
+  compile_taunts(task.input.at(0), path_map.output_prefix);
+  return true;
 }

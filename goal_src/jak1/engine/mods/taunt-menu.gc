@@ -9,34 +9,22 @@
    (menu-idx dpad-idx)
    (play-idx dpad-idx)
    )
+  :pack-me
   )
+
+(deftype taunt-info (basic)
+  ((length uint32)
+   (taunts taunt :inline :dynamic)))
 
 (defmacro static-taunt (name ambient dpad play)
   `(new 'static 'taunt :menu-name ,name :ambient-name ,ambient :menu-idx (dpad-idx ,dpad) :play-idx (dpad-idx ,play)))
 
-(define *taunts*
-  (new 'static 'boxed-array :type taunt
-    (static-taunt "YEEHAW!" "BIL-TA09" up up)
-    (static-taunt "Mud" "BIL-AM1A" up right)
-    (static-taunt "WE MADE IT!" "SKSP0095" up down)
-    (static-taunt "Fish in the mornin" "FIS-AM04" up left)
+(define *taunt-info* (the taunt-info #f))
 
-    (static-taunt "Waiting" "SKSP0444" right up)
-    (static-taunt "*SNORES*" "FAR-LO1A" right right)
-    (static-taunt "Anybody there?" "RED-AM01" right down)
-    (static-taunt "DIG!" "MSH-AM02" right left)
-
-    (static-taunt "*SOBBING*" "WAR-LO1B" down up)
-    (static-taunt "Catastrophe!" "CHI-AM01" down right)
-    (static-taunt "This isnt good..." "SAGELP31" down down)
-    (static-taunt "help would be good!" "BLU-AM01" down left)
-
-    (static-taunt "Open road" "EXP-AM03" left up)
-    (static-taunt "Im hungry" "MTA-AM03" left right)
-    (static-taunt "Oh my..." "ASSTLP32" left down)
-    (static-taunt "Nasty lurkers" "GEO-AM05" left left)
-    )
-)
+(defmethod relocate ((this taunt-info) (offset int))
+  (set! *taunt-info* this)
+  this
+  )
 
 (deftype taunt-menu (process)
   ((state-time time-frame)
@@ -107,9 +95,9 @@
 
 (defun set-up-single-menu! ((menu (array taunt)) (idx dpad-idx))
   (let ((cur-idx 0))
-    (dotimes (i (-> *taunts* length))
-      (when (= idx (-> *taunts* i menu-idx))
-        (set! (-> menu cur-idx) (-> *taunts* i))
+    (dotimes (i (-> *taunt-info* length))
+      (when (= idx (-> *taunt-info* taunts i menu-idx))
+        (set! (-> menu cur-idx) (-> *taunt-info* taunts i))
         (1+! cur-idx)
         )
       )
