@@ -74,7 +74,7 @@ jobs:
     name: "🍎 MacOS"
     uses: ./.github/workflows/macos-build.yaml
     with:
-      cmakePreset: "Release-macos-x86_64-clang-static"
+      cmakePreset: "Release-macos-clang-static"
       cachePrefix: "static"
       uploadArtifacts: true
     secrets: inherit
@@ -85,7 +85,7 @@ jobs:
     name: "🍎 MacOS"
     uses: ./.github/workflows/macos-build.yaml
     with:
-      cmakePreset: "Release-macos-x86_64-clang-static"
+      cmakePreset: "Release-macos-clang-static"
       cachePrefix: "static-arm"
       uploadArtifacts: true
     secrets: inherit
