@@ -240,7 +240,7 @@
 (define *progress-cheat* #f)
 
 (define *first-boot* #t) ;; PAL
-
+(defun-extern toggle-softlock-protection symbol)
 (defun main-cheats ()
   "Handle cheat codes and timeout"
   ;; look for codes when L3 is pushed
