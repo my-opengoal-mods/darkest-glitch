@@ -206,7 +206,7 @@
                  *target*
                  (not (logtest? (-> *target* state-flags) (state-flags grabbed)))
                  ;; prevent opening the taunt menu if teamruns selector is active
-                 (not (and (cpad-hold? 0 l2) (cpad-hold? 0 r2)))
+                 (not (and (cpad-hold? 0 l2) (cpad-hold? 0 r2) (cpad-hold? 0 l3)))
                  )
         (set! (-> self selected-menu) (the dpad-idx dpad))
         (go-virtual menu)

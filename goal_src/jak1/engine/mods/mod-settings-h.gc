@@ -66,7 +66,7 @@
   (crate-steel)
   (crate-darkeco)
   )
-  
+
 (defenum run-category
   :type int32
   (custom)
@@ -77,14 +77,14 @@
   (all-flies)
   (all-orbs)
   )
-  
+
 (defenum run-mode
   :type int32
   (speedrun)
   (lockout)
   (casual)
   )
-  
+
 (defenum citadel-skip-version
   :type int32
   (patched)
@@ -108,6 +108,18 @@
   (team)
   (all)
   )
+
+(define *in-run-currently* #f)
+(defun turn-on-in-run ()
+(set! *in-run-currently* #t)
+)
+
+(defun turn-off-in-run ()
+;; currently lets break this on purpose so darkness stops turning off
+;;(set! *in-run-currently* #f)
+
+#t
+)
 
 (defenum teamrun-command
   :type int32
@@ -153,9 +165,9 @@
 
   (current_level    symbol)
   (tgt_state        symbol)
-  (mp_state         mp-tgt-state) 
+  (mp_state         mp-tgt-state)
   (mp_state_check   mp-tgt-state) ;; used only on goal side, used to check if mp_state has changed
-  
+
   ;; set from teamrun side
   (cells_collected int32)
   (player_index    int32)
@@ -183,7 +195,7 @@
     (new (symbol type) _type_)
     )
   )
-  
+
 (deftype timer-info (structure)
  ((hours        int32)
   (minutes      int32)
@@ -200,7 +212,7 @@
     (new (symbol type) _type_)
     )
   )
-  
+
 (deftype notification-info (structure)
   ((has_notif?   int32)
    (message     string)
@@ -265,7 +277,7 @@
     (new (symbol type) _type_)
     )
   )
-  
+
 (deftype multiplayer-info (structure)
  ((teamrun_command      teamrun-command)
   (force_continue       string)
