@@ -691,7 +691,7 @@
       (true! *has-landed?*))
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf))
                                       (bucket-id subtitle))
-      (draw-string-xy (string-format "Speedrunner Mode ~%OpenGOAL Version: ~S ~%TR Client Version: ~S ~%Category: ~S ~%Cutscene Skips ~A"
+      (draw-string-xy (string-format "Darkest Glitch Mod~%Speedrunner Mode ~%OpenGOAL Version: ~S ~%TR Client Version: ~S ~%Category: ~S ~%Cutscene Skips ~A"
                                      *pc-settings-built-sha*
                                      (-> *multiplayer-info* client_version)
                                      (enum->string speedrun-category (-> *speedrun-info* category))
@@ -699,7 +699,7 @@
                                      *has-landed?*)
                       buf
                       0
-                      (- 220 (* 8 5))
+                      (- 220 (* 8 6))
                       (font-color flat-yellow)
                       (font-flags shadow kerning))))
   (none))

@@ -126,7 +126,7 @@
     (logclear! (-> remote-target control root-prim collide-as) (collide-kind target-remote))
     )
   )
-  
+
 (defun is-grabbed? ()
   (logtest? (-> *target* state-flags)
     (state-flags grabbed)
@@ -134,7 +134,7 @@
   )
 
 (defun has-all-citadel-cells? ()
-  (and 
+  (and
     (task-closed? (game-task citadel-sage-green) (task-status need-resolution))
     (task-closed? (game-task citadel-sage-blue) (task-status need-resolution))
     (task-closed? (game-task citadel-sage-red) (task-status need-resolution))
@@ -163,8 +163,8 @@
 
 (defun is-valid-level? ((level-name symbol))
   (case level-name
-    (('lavatube 'beach 'citadel 'darkcave 'finalboss 'firecanyon 
-    'jungle 'jungleb 'maincave 'misty 'ogre 'robocave 'rolling 'snow 
+    (('lavatube 'beach 'citadel 'darkcave 'finalboss 'firecanyon
+    'jungle 'jungleb 'maincave 'misty 'ogre 'robocave 'rolling 'snow
     'sunken 'sunkenb 'swamp 'training 'village1 'village2 'village3)
       (return #t)
       )
@@ -291,16 +291,16 @@
   )
 
 (defun is-level-alive? ((level-name symbol))
-  (if (or 
+  (if (or
       (and (-> *load-state* want 0)
-        (= level-name (-> *load-state* want 0 name)) 
+        (= level-name (-> *load-state* want 0 name))
         (case (-> *load-state* want 0 display?)
           (('special 'special-vis #f) #f)
           (else #t)
           )
         )
       (and (-> *load-state* want 1)
-        (= level-name (-> *load-state* want 1 name)) 
+        (= level-name (-> *load-state* want 1 name))
         (case (-> *load-state* want 1 display?)
           (('special 'special-vis #f) #f)
           (else #t)
@@ -352,7 +352,7 @@
     )
     #f
   )
-  
+
 
 (defun get-preferable-level-slot ()
   (cond
@@ -374,7 +374,7 @@
     ((= (-> *load-state* want 1 display?) #f)
       1
       )
-    (else 
+    (else
       (let ((current-level (get-target-active-level (get-spectator-target))))
         (cond
           ((!= current-level #f)
@@ -424,13 +424,13 @@
       )
     )
   )
-  
+
 (defun remote-target-in-close-by-environment? ((remote-target target))
-  (if 
+  (if
     ;(and (process-close? remote-target 500000.0) ;; prevents some crashing in recording tool, but causes remote targets to freeze if they're on zoomer and far away
-      (or 
-        (= remote-target *target*) 
-        (is-target-in-any-active-level? remote-target)  
+      (or
+        (= remote-target *target*)
+        (is-target-in-any-active-level? remote-target)
         (and (is-target-current-level-alive? (the int (-> remote-target saved-owner))) (< (remote-target-move-dist remote-target (seconds 1.5)) 250000.0))
         )
       ;)
@@ -468,7 +468,7 @@
       )
     (set! *allow-final-boss?* has-most-cells)
     (when (string= level-name "finalboss")
-      (when has-most-cells 
+      (when has-most-cells
         (set! (-> (the-as plat-eco-finalboss (process-by-ename "plat-eco-finalboss-1")) speed) 0.1)
         )
       (when (not has-most-cells)
@@ -489,8 +489,8 @@
       )
     )
 
-  (when (and *allow-one-time-citadel-skip?* 
-        (= (-> *multiplayer-info* game citadel_skip_version) (citadel-skip-version shared)) 
+  (when (and *allow-one-time-citadel-skip?*
+        (= (-> *multiplayer-info* game citadel_skip_version) (citadel-skip-version shared))
         (name= (-> *game-info* current-continue name) "citadel-start")
         (task-closed? (game-task citadel-sage-green) (task-status need-resolution))
       )
@@ -516,7 +516,7 @@
   :disp1 #f
   )
   )
-  
+
 (define *tmp-flut?* #f)
 (define *tmp-zoomer?* #f)
 (define *full-hp?* #f)
@@ -577,6 +577,7 @@
     (set! (-> *game-info* current-continue) *tmp-continue-point*)
     (initialize! *game-info* 'dead (the-as game-save #f) (the-as string #f))
     (speedrun-reset-common-settings)
+
     )
   (none)
   )

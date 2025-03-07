@@ -116,9 +116,9 @@
 
 (defun turn-off-in-run ()
 ;; currently lets break this on purpose so darkness stops turning off
-;;(set! *in-run-currently* #f)
+(set! *in-run-currently* #f)
 
-#t
+
 )
 
 (defenum teamrun-command
