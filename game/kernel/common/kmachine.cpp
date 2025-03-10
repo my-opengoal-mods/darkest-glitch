@@ -198,22 +198,27 @@ u64 launchPythonExe(u32 exePathu32, u32 argu32) {
   std::string exePath = Ptr<String>(exePathu32).c()->data();
   std::string argument = Ptr<String>(argu32).c()->data();
 
+
+  std::string fullFilePath = fs::path(file_util::get_jak_project_dir() / "custom_assets" /
+                                  game_version_names[g_game_version] / "audio" / exePath).string();
+
+
   std::cout << "[DEBUG] Current working directory: " << std::filesystem::current_path() << std::endl;
   std::cout << "[DEBUG] Received exePath: " << exePath << std::endl;
   std::cout << "[DEBUG] Received argument: " << argument << std::endl;
 
-  if (!std::filesystem::exists(std::filesystem::absolute(exePath))) {
-      std::cerr << "[ERROR] Executable not found: " << exePath << std::endl;
+  if (!std::filesystem::exists(std::filesystem::absolute(fullFilePath))) {
+      std::cerr << "[ERROR] Executable not found: " << fullFilePath << std::endl;
       return bool_to_symbol(false);
   }
 
-  std::cout << "[DEBUG] Executable exists: " << exePath << std::endl;
+  std::cout << "[DEBUG] Executable exists: " << fullFilePath << std::endl;
 
   std::thread thread([=]() {
-      std::string command = exePath + " \"" + argument + "\"";
+      std::string command = fullFilePath + " \"" + argument + "\"";
       std::cout << "[DEBUG] Command to execute: " << command << std::endl;
 
-      std::cout << "[INFO] Launching executable: " << exePath << " with argument: " << argument << std::endl;
+      std::cout << "[INFO] Launching executable: " << fullFilePath << " with argument: " << argument << std::endl;
 
       int result = system(command.c_str());
       if (result != 0) {

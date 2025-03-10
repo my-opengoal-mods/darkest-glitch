@@ -28,10 +28,12 @@
 (defun toggle-softlock-protection ()
 (if *softlock-protection-enabled*
 (begin
-(play-sound-file "softlock_protection_disabled.wav" 100)
+;;(play-sound-file "softlock_protection_disabled.wav" 100)
+ (python-tts "tts.exe" "Softlock protection disabled")
 (set! *softlock-protection-enabled* #f))
 (begin
-(play-sound-file "softlock_protection_enabled.wav" 100)
+;;(play-sound-file "softlock_protection_enabled.wav" 100)
+ (python-tts "tts.exe" "Softlock protection enabled")
 (set! *softlock-protection-enabled* #t))
 )
 )
@@ -377,6 +379,7 @@
 
   (if (= (-> (level-get-target-inside *level*) name) 'lavatube)
   (set! *lava-tube-counter* (+ *lava-tube-counter* 1))
+
   )
 
 
@@ -384,24 +387,27 @@
 (defun runs-every-frame ()
   ;;(increase-power-cell-by-one) This is a call to increase-power-cell-by-one defined in mod-common-functions.gc\
 
-  (if (and *in-run-currently* (not (name= (-> *game-info* current-continue name) "lavatube-start")))
+  (if (and *in-run-currently* #t)
   (set! (-> (level-get-target-inside *level*) mood-func) update-mood-finalboss)
   )
 
 ;;special case for lavatube-start
-(when (and (= (-> (level-get-target-inside *level*) name) 'lavatube)  (not (name= (-> *game-info* current-continue name) "lavatube-end"))  )
-  (if (and *in-run-currently* (or
-   (name= (-> *game-info* current-continue name) "lavatube-start")
-   (name= (-> *game-info* current-continue name) "lavatube-middle")
-   (name= (-> *game-info* current-continue name) "lavatube-after-ribbon")
-   )
-    (< *lava-tube-counter* 3)
-   )
-  (set! (-> (level-get-target-inside *level*) mood-func) update-mood-finalboss)
-  (set! (-> (level-get-target-inside *level*) mood-func) update-mood-lavatube)
+;; Special case for lavatube-start
+(when (and (= (-> (level-get-target-inside *level*) name) 'lavatube)
+           (not (name= (-> *game-info* current-continue name) "lavatube-end"))
+           *in-run-currently*
+           (or (name= (-> *game-info* current-continue name) "lavatube-start")
+               (name= (-> *game-info* current-continue name) "lavatube-middle")
+               (name= (-> *game-info* current-continue name) "lavatube-after-ribbon"))
+           (> *lava-tube-counter* 3)
+           (not (task-closed? (game-task village4-button) (task-status need-reward-speech))))
+  (begin
+    (close-specific-task! (game-task village4-button) (task-status need-reward-speech))
+    (set! (-> (level-get-target-inside *level*) mood-func) update-mood-lavatube)
+     (python-tts "tts.exe" "unlocking the warp-gate")
   )
-
 )
+
   (if *show-input-display* (input-display-on) (input-display-off))
   ;; ensure orb-placer is spawned/killed as requested, debug menu is updated
   ;; (when *debug-segment*
@@ -859,24 +865,27 @@
 (when (and *softlock-protection-enabled* *in-run-currently*)
 
 
-(if (name= (-> *game-info* current-continue name) "citadel-start")
+(when (name= (-> *game-info* current-continue name) "citadel-start")
     (set-continue! *game-info* "citadel-elevator")
-    (play-softlock-prot-ran)
+    (python-tts "tts.exe" "setting continue to citadel-elevator")
+    ;;(play-softlock-prot-ran)
   )
 
 
-  (if (name= (-> *game-info* current-continue name) "sunken1")
+  (when (name= (-> *game-info* current-continue name) "sunken1")
     (set-continue! *game-info* "sunken-start")
-    (play-softlock-prot-ran)
+    (python-tts "tts.exe" "setting continue to sunken-start")
+    ;;(play-softlock-prot-ran)
   )
 
-(if (name= (-> *game-info* current-continue name) "jungle-tower")
+(when (name= (-> *game-info* current-continue name) "jungle-tower")
    (set! *jungle-deaths* (+ *jungle-deaths* 1))
   )
 (when (and (name= (-> *game-info* current-continue name) "jungle-tower")  (>= *jungle-deaths* 10))
 (set! *jungle-deaths* 0)
 (set-continue! *game-info* "jungle-start")
-(play-softlock-prot-ran)
+(python-tts "tts.exe" "setting continue to jungle-start")
+;;(play-softlock-prot-ran)
 )
 
 
@@ -886,8 +895,9 @@
 
 )
 
-(set-continue! *game-info* "village3-warp")
-(play-softlock-prot-ran)
+(set-continue! *game-info* "maincave-start")
+(python-tts "tts.exe" "setting continue to main-cave-start")
+;;(play-softlock-prot-ran)
 )
 
 )
