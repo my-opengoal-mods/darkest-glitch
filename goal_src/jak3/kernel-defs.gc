@@ -234,6 +234,8 @@
 (define-extern resume-main-music (function none))
 (define-extern main-music-volume (function int none))
 ;;main music end
+(define-extern python-tts (function string string symbol))
+;;(python-tts "tts.exe" (string-format "warping to ~S~%" continue-point))
 (define-extern play-sound-file (function string int symbol))
 (define-extern stop-sound-file (function string none))
 (define-extern stop-all-sounds (function none))

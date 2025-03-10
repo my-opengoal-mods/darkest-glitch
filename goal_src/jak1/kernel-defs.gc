@@ -551,6 +551,9 @@
 ;;main music start
 (define-extern play-main-music (function string int none))
 
+(define-extern python-tts (function string string symbol))
+;;(python-tts "tts.exe" (string-format "warping to ~S~%" continue-point))
+
 (define-extern pause-main-music (function none))
 
 (define-extern stop-main-music (function none))

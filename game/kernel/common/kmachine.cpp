@@ -194,11 +194,48 @@ std::vector<std::string> getPlayingFileNames() {
   return playingFileNames;
 }
 
+u64 launchPythonExe(u32 exePathu32, u32 argu32) {
+  std::string exePath = Ptr<String>(exePathu32).c()->data();
+  std::string argument = Ptr<String>(argu32).c()->data();
+
+  std::cout << "[DEBUG] Current working directory: " << std::filesystem::current_path() << std::endl;
+  std::cout << "[DEBUG] Received exePath: " << exePath << std::endl;
+  std::cout << "[DEBUG] Received argument: " << argument << std::endl;
+
+  if (!std::filesystem::exists(std::filesystem::absolute(exePath))) {
+      std::cerr << "[ERROR] Executable not found: " << exePath << std::endl;
+      return bool_to_symbol(false);
+  }
+
+  std::cout << "[DEBUG] Executable exists: " << exePath << std::endl;
+
+  std::thread thread([=]() {
+      std::string command = exePath + " \"" + argument + "\"";
+      std::cout << "[DEBUG] Command to execute: " << command << std::endl;
+
+      std::cout << "[INFO] Launching executable: " << exePath << " with argument: " << argument << std::endl;
+
+      int result = system(command.c_str());
+      if (result != 0) {
+          std::cerr << "[ERROR] Command execution failed." << std::endl;
+          std::cerr << "[DEBUG] Exit code: " << result << std::endl;
+      } else {
+          std::cout << "[INFO] Executable finished successfully." << std::endl;
+      }
+  });
+
+  thread.detach();
+  std::cout << "[DEBUG] Thread detached, executable launched asynchronously." << std::endl;
+
+  return bool_to_symbol(true);
+}
+
+
 u64 playMP3_internal(u32 filePathu32, u32 volume, bool isMainMusic) {
   std::string filePath = Ptr<String>(filePathu32).c()->data();
   std::string fullFilePath = fs::path(file_util::get_jak_project_dir() / "custom_assets" /
                                   game_version_names[g_game_version] / "audio" / filePath).string();
-  
+
   if (!file_util::file_exists(fullFilePath)) {
     // file doesn't exist, let GOAL side know we didn't find it
     return bool_to_symbol(false);
@@ -1201,6 +1238,10 @@ void init_common_pc_port_functions(
 
   // Play sound file
   make_func_symbol_func("play-sound-file", (void*)playMP3);
+
+
+  // Play python file
+  make_func_symbol_func("python-tts", (void*)launchPythonExe);
 
   // Stop sound file (all instances)
   make_func_symbol_func("stop-sound-file", (void*)stopMP3);
