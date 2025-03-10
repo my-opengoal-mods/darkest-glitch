@@ -33,7 +33,7 @@
 (set! *softlock-protection-enabled* #f))
 (begin
 ;;(play-sound-file "softlock_protection_enabled.wav" 100)
- (python-tts "tts.exe" "Softlock protection enabled")
+(python-tts "tts.exe" "Softlock protection enabled")
 (set! *softlock-protection-enabled* #t))
 )
 )
@@ -316,7 +316,21 @@
       (reset-run-variables)
       (when (not (-> *spectator-handler* is_spectator?))
         (progress-fast-save-and-start-speedrun (speedrun-category full-game))
-        (turn-on-in-run)
+        ;;(turn-on-in-run)
+
+
+                (process-spawn-function process
+          (lambda :behavior process ()
+          (when (not *in-run-currently*)
+                 (suspend-for (seconds 3.2))
+           (turn-on-in-run)
+           (play-sound-file "darkness_on.mp3" 100)
+          )
+            )
+            )
+
+
+
         )
       (set! (-> *pc-settings* ps2-actor-vis?) #f)
       (set! *allow-cell-pickup?* #t)
@@ -341,7 +355,18 @@
         (set! (-> *pause-handler* active_time) (+ (current-time) (seconds 6.0)))
         )
       )
-    (((teamrun-command target-release)) (safe-release-from-grab) (turn-on-in-run))
+    (((teamrun-command target-release)) (safe-release-from-grab)
+                    (process-spawn-function process
+          (lambda :behavior process ()
+          (when (not *in-run-currently*)
+                 (suspend-for (seconds 3.2))
+           (turn-on-in-run)
+          )
+
+            ))
+
+
+    )
     (((teamrun-command temp-checkpoint-store)) (store-temp-checkpoint))
     (((teamrun-command temp-checkpoint-load)) (spawn-temp-checkpoint)  )
     (((teamrun-command enable-spectator-mode))
@@ -404,7 +429,7 @@
   (begin
     (close-specific-task! (game-task village4-button) (task-status need-reward-speech))
     (set! (-> (level-get-target-inside *level*) mood-func) update-mood-lavatube)
-     (python-tts "tts.exe" "unlocking the warp-gate")
+     (python-tts "tts.exe" "Softlock protection: unlocking the warp-gate")
   )
 )
 
@@ -867,14 +892,14 @@
 
 (when (name= (-> *game-info* current-continue name) "citadel-start")
     (set-continue! *game-info* "citadel-elevator")
-    (python-tts "tts.exe" "setting continue to citadel-elevator")
+    (python-tts "tts.exe" "Softlock protection:  setting continue to citadel-elevator")
     ;;(play-softlock-prot-ran)
   )
 
 
   (when (name= (-> *game-info* current-continue name) "sunken1")
     (set-continue! *game-info* "sunken-start")
-    (python-tts "tts.exe" "setting continue to sunken-start")
+    (python-tts "tts.exe" "Softlock protection: setting continue to sunken-start")
     ;;(play-softlock-prot-ran)
   )
 
@@ -884,19 +909,19 @@
 (when (and (name= (-> *game-info* current-continue name) "jungle-tower")  (>= *jungle-deaths* 10))
 (set! *jungle-deaths* 0)
 (set-continue! *game-info* "jungle-start")
-(python-tts "tts.exe" "setting continue to jungle-start")
+(python-tts "tts.exe" "Softlock protection: setting continue to jungle-start")
 ;;(play-softlock-prot-ran)
 )
 
 
-(when (or (= (-> (level-get-target-inside *level*) name) 'maincave)
+(when (and (not (name= (-> *game-info* current-continue name) "maincave-start") )(or (= (-> (level-get-target-inside *level*) name) 'maincave)
 (= (-> (level-get-target-inside *level*) name) 'robocave)
 (= (-> (level-get-target-inside *level*) name) 'darkcave)
 
-)
+))
 
 (set-continue! *game-info* "maincave-start")
-(python-tts "tts.exe" "setting continue to main-cave-start")
+(python-tts "tts.exe" "Softlock protection: setting continue to main-cave-start")
 ;;(play-softlock-prot-ran)
 )
 

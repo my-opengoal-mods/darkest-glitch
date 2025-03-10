@@ -198,10 +198,8 @@ u64 launchPythonExe(u32 exePathu32, u32 argu32) {
   std::string exePath = Ptr<String>(exePathu32).c()->data();
   std::string argument = Ptr<String>(argu32).c()->data();
 
-
   std::string fullFilePath = fs::path(file_util::get_jak_project_dir() / "custom_assets" /
-                                  game_version_names[g_game_version] / "audio" / exePath).string();
-
+                                      game_version_names[g_game_version] / "audio" / exePath).string();
 
   std::cout << "[DEBUG] Current working directory: " << std::filesystem::current_path() << std::endl;
   std::cout << "[DEBUG] Received exePath: " << exePath << std::endl;
@@ -215,17 +213,22 @@ u64 launchPythonExe(u32 exePathu32, u32 argu32) {
   std::cout << "[DEBUG] Executable exists: " << fullFilePath << std::endl;
 
   std::thread thread([=]() {
-      std::string command = fullFilePath + " \"" + argument + "\"";
+      std::string command = "\"" + fullFilePath + "\" " + "\"" + argument + "\"";
       std::cout << "[DEBUG] Command to execute: " << command << std::endl;
 
-      std::cout << "[INFO] Launching executable: " << fullFilePath << " with argument: " << argument << std::endl;
+      STARTUPINFO si = {0};
+      PROCESS_INFORMATION pi = {0};
 
-      int result = system(command.c_str());
-      if (result != 0) {
-          std::cerr << "[ERROR] Command execution failed." << std::endl;
-          std::cerr << "[DEBUG] Exit code: " << result << std::endl;
+      si.cb = sizeof(si);
+      si.dwFlags = STARTF_USESHOWWINDOW;
+      si.wShowWindow = SW_HIDE; // Hide the window
+
+      if (CreateProcess(NULL, const_cast<char*>(command.c_str()), NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi)) {
+          std::cout << "[INFO] Executable launched successfully." << std::endl;
+          CloseHandle(pi.hProcess);
+          CloseHandle(pi.hThread);
       } else {
-          std::cout << "[INFO] Executable finished successfully." << std::endl;
+          std::cerr << "[ERROR] Failed to launch executable. Error: " << GetLastError() << std::endl;
       }
   });
 
