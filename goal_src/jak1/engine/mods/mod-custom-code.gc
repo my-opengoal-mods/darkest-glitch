@@ -292,6 +292,20 @@
   (none)
   )
 
+(defun audio-test ()
+                (process-spawn-function process
+          (lambda :behavior process ()
+          (when (not *in-run-currently*)
+                 (suspend-for (seconds 3.2))
+           (turn-on-in-run)
+           (play-sound-file "zed.mp3" 50)
+
+           (suspend-for (seconds 5.0))
+            (play-sound-file "darkness_on.mp3" 50)
+          )
+            )
+            )
+)
 (defun execute-teamrun-command ()
   (case (-> *multiplayer-info* teamrun_command)
     (((teamrun-command mark-connected))
@@ -321,10 +335,13 @@
 
                 (process-spawn-function process
           (lambda :behavior process ()
-          (when (not *in-run-currently*)
+         (when (not *in-run-currently*)
                  (suspend-for (seconds 3.2))
            (turn-on-in-run)
-           (play-sound-file "darkness_on.mp3" 100)
+           (play-sound-file "zed.mp3" 50)
+
+           (suspend-for (seconds 5.0))
+            (play-sound-file "darkness_on.mp3" 50)
           )
             )
             )
