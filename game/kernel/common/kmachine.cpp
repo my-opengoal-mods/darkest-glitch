@@ -194,48 +194,63 @@ std::vector<std::string> getPlayingFileNames() {
   return playingFileNames;
 }
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 u64 launchPythonExe(u32 exePathu32, u32 argu32) {
-  std::string exePath = Ptr<String>(exePathu32).c()->data();
-  std::string argument = Ptr<String>(argu32).c()->data();
+    std::string exePath = Ptr<String>(exePathu32).c()->data();
+    std::string argument = Ptr<String>(argu32).c()->data();
 
-  std::string fullFilePath = fs::path(file_util::get_jak_project_dir() / "custom_assets" /
-                                      game_version_names[g_game_version] / "audio" / exePath).string();
+    std::string fullFilePath = fs::path(file_util::get_jak_project_dir() / "custom_assets" /
+                                        game_version_names[g_game_version] / "audio" / exePath).string();
 
-  std::cout << "[DEBUG] Current working directory: " << std::filesystem::current_path() << std::endl;
-  std::cout << "[DEBUG] Received exePath: " << exePath << std::endl;
-  std::cout << "[DEBUG] Received argument: " << argument << std::endl;
+    std::cout << "[DEBUG] Current working directory: " << std::filesystem::current_path() << std::endl;
+    std::cout << "[DEBUG] Received exePath: " << exePath << std::endl;
+    std::cout << "[DEBUG] Received argument: " << argument << std::endl;
 
-  if (!std::filesystem::exists(std::filesystem::absolute(fullFilePath))) {
-      std::cerr << "[ERROR] Executable not found: " << fullFilePath << std::endl;
-      return bool_to_symbol(false);
-  }
+    if (!std::filesystem::exists(std::filesystem::absolute(fullFilePath))) {
+        std::cerr << "[ERROR] Executable not found: " << fullFilePath << std::endl;
+        return bool_to_symbol(false);
+    }
 
-  std::cout << "[DEBUG] Executable exists: " << fullFilePath << std::endl;
+    std::cout << "[DEBUG] Executable exists: " << fullFilePath << std::endl;
 
-  std::thread thread([=]() {
-      std::string command = "\"" + fullFilePath + "\" " + "\"" + argument + "\"";
-      std::cout << "[DEBUG] Command to execute: " << command << std::endl;
+    std::thread thread([=]() {
+        std::string command = "\"" + fullFilePath + "\" \"" + argument + "\"";
+        std::cout << "[DEBUG] Command to execute: " << command << std::endl;
 
-      STARTUPINFO si = {0};
-      PROCESS_INFORMATION pi = {0};
+        #ifdef _WIN32
+        STARTUPINFO si = {0};
+        PROCESS_INFORMATION pi = {0};
 
-      si.cb = sizeof(si);
-      si.dwFlags = STARTF_USESHOWWINDOW;
-      si.wShowWindow = SW_HIDE; // Hide the window
+        si.cb = sizeof(si);
+        si.dwFlags = STARTF_USESHOWWINDOW;
+        si.wShowWindow = SW_HIDE; // Hide the window
 
-      if (CreateProcess(NULL, const_cast<char*>(command.c_str()), NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi)) {
-          std::cout << "[INFO] Executable launched successfully." << std::endl;
-          CloseHandle(pi.hProcess);
-          CloseHandle(pi.hThread);
-      } else {
-          std::cerr << "[ERROR] Failed to launch executable. Error: " << GetLastError() << std::endl;
-      }
-  });
+        if (CreateProcess(NULL, const_cast<char*>(command.c_str()), NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi)) {
+            std::cout << "[INFO] Executable launched successfully." << std::endl;
+            CloseHandle(pi.hProcess);
+            CloseHandle(pi.hThread);
+        } else {
+            std::cerr << "[ERROR] Failed to launch executable. Error: " << GetLastError() << std::endl;
+        }
+        #else
+        // Fallback for non-Windows systems
+        int result = system((command + " &").c_str());
+        if (result != 0) {
+            std::cerr << "[ERROR] Command execution failed." << std::endl;
+            std::cerr << "[DEBUG] Exit code: " << result << std::endl;
+        } else {
+            std::cout << "[INFO] Executable finished successfully." << std::endl;
+        }
+        #endif
+    });
 
-  thread.detach();
-  std::cout << "[DEBUG] Thread detached, executable launched asynchronously." << std::endl;
+    thread.detach();
+    std::cout << "[DEBUG] Thread detached, executable launched asynchronously." << std::endl;
 
-  return bool_to_symbol(true);
+    return bool_to_symbol(true);
 }
 
 
